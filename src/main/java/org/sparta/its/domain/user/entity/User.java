@@ -46,7 +46,7 @@ public class User extends BaseEntity {
 	private List<Reservation> reservations = new ArrayList<>();
 
 	// 필드
-	@Column(unique = true, nullable = false, length = 255)
+	@Column(nullable = false, length = 255)
 	private String email;
 
 	@Column(nullable = false, length = 100)

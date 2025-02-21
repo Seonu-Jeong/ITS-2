@@ -6,8 +6,10 @@ import java.util.List;
 import org.sparta.its.domain.reservation.entity.Reservation;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,7 +38,7 @@ public class Seat {
 
 	// 연관관계
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "hall_id")
+	@JoinColumn(name = "hall_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Hall hall;
 
 	@OneToMany(mappedBy = "seat")

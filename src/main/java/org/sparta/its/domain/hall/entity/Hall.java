@@ -47,7 +47,7 @@ public class Hall extends BaseEntity {
 	private final List<Seat> seats = new ArrayList<>();
 
 	// 필드
-	@Column(nullable = false, unique = true, length = 30)
+	@Column(nullable = false, length = 30)
 	private String name;
 
 	@Column(nullable = false, length = 50)

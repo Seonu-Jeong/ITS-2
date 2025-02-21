@@ -1,0 +1,27 @@
+### 회원 가입
+@userType = ADMIN
+
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+  "email": "user6@gmail.com",
+  "password": "Password1234@",
+  "name": "JEONG1",
+  "phoneNumber": "010-2149-0922",
+  "role": "{{userType}}"
+}
+
+### 로그인
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "user6@gmail.com",
+  "password": "Password1234@"
+}
+
+> {%
+    client.global.set("authToken", response.headers.valueOf("Authorization"));
+    client.log("token value : " + client.global.get("authToken"));
+%}

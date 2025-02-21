@@ -1,0 +1,8 @@
+### 자리 임시 선택
+@concertId = 콘서트아이디
+@seatId = 자리아이디
+@date = 2025-00-00
+
+POST http://localhost:8080/concerts/{{concertId}}/seats/{{seatId}}/select?date={{date}}
+Authorization: {{authToken}}
+

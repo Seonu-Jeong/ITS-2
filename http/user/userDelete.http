@@ -1,0 +1,8 @@
+### 회원 탈퇴
+DELETE http://localhost:8080/users
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "password": "Password1234@"
+}

@@ -1,0 +1,32 @@
+### 공연장 등록
+@name = 공연장명
+@location = 장소
+@capacity = 100
+
+POST http://localhost:8080/halls
+Content-Type: multipart/form-data; boundary=boundary
+Authorization: {{authToken}}
+
+--boundary
+Content-Disposition: form-data; name="name"
+
+{{name}}
+--boundary
+Content-Disposition: form-data; name="location"
+
+{{location}}
+--boundary
+Content-Disposition: form-data; name="capacity"
+
+{{capacity}}
+--boundary
+Content-Disposition: form-data; name="images"; filename="image1.jpg"
+Content-Type: image/jpeg
+
+< ../image/hall1.jpeg
+--boundary
+Content-Disposition: form-data; name="images"; filename="image2.jpg"
+Content-Type: image/jpeg
+
+< ../image/hall2.jpeg
+--boundary--

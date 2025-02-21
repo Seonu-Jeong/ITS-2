@@ -1,0 +1,14 @@
+### 콘서트 정보 수정
+@concertId = 콘서트아이디
+
+PATCH http://localhost:8080/concerts/{{concertId}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "title": "아이유와 함께 떠나요",
+  "startAt": "2025-12-15",
+  "endAt": "2025-12-17",
+  "runningStartTime": "15:00",
+  "runningEndTime": "17:00"
+}

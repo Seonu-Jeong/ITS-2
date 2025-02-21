@@ -1,0 +1,12 @@
+### 회원 수정
+PATCH http://localhost:8080/users
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "email": "user1@gmail.com",
+  "originPassword": "Password1234@",
+  "newPassword": "passWord9876!",
+  "name": "JEONG",
+  "phoneNumber": "010-2149-0922"
+}

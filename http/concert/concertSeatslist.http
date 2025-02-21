@@ -1,0 +1,6 @@
+### 콘서트 자리 조회
+@concertId = 콘서트아이디
+@date = 2025-MM-DD
+
+GET http://localhost:8080/concerts/{{concertId}}/seats?date={{date}}
+Authorization: {{authToken}}

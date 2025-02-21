@@ -1,0 +1,5 @@
+### 취소 리스트 조회
+
+GET http://localhost:8080/cancelLists
+Content-Type: application/json
+Authorization: {{authToken}}

@@ -1,0 +1,11 @@
+### 예약 취소
+@reservationId = 아이디
+@rejectComment = 사유
+
+POST http://localhost:8080/reservations/{{reservationId}}/cancel
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "rejectComment": "{{rejectComment}}"
+}

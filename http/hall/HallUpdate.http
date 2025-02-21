@@ -1,0 +1,11 @@
+### 공연장 정보 수정
+@hallId = 공연장아이디
+
+PATCH http://localhost:8080/halls/{{hallId}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "123",
+  "location": "부산"
+}

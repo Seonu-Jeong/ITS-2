@@ -1,0 +1,18 @@
+### 공연장 이미지 단건 수정
+@hallId = 공연장아이디
+@hallImagesId = 이미지아이디
+
+PATCH http://localhost:8080/halls/{{hallId}}/hallImages/{{hallImagesId}}
+Authorization: {{authToken}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="imageFormat"
+
+HALL
+--boundary
+Content-Disposition: form-data; name="images"; filename="image3.jpg"
+Content-Type: image/jpeg
+
+< ../image/hall3update.jpeg
+--boundary--

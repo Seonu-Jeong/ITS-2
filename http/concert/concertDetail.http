@@ -1,0 +1,5 @@
+### 콘서트 조회 (단건)
+@concertId = 콘서트아이디
+
+GET http://localhost:8080/concerts/{{concertId}}
+Authorization: {{authToken}}

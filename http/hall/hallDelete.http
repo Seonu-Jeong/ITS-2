@@ -1,0 +1,5 @@
+### 공연장 삭제
+@hallId = 공연장아이디
+
+DELETE http://localhost:8080/halls/{{hallId}}
+Authorization: {{authToken}}

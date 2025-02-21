@@ -1,0 +1,6 @@
+### 예약 완료
+@reservationId = 아이디
+
+POST http://localhost:8080/reservations/{{reservationId}}
+Authorization: {{authToken}}
+

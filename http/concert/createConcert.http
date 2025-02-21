@@ -1,0 +1,52 @@
+### 콘서트 등록
+@hallId = 공연장아이디
+@concertTitle = 콘서트명
+@singer = 가수명
+@startAt = 2025-MM-DD
+@endAt = 2025-MM-DD
+@runningStartTime = 00:00
+@runningEndTime = 00:00
+@price = 11000
+
+POST http://localhost:8080/concerts
+Content-Type: multipart/form-data; boundary=boundary
+Authorization: {{authToken}}
+
+--boundary
+Content-Disposition: form-data; name="hallId"
+
+{{hallId}}
+--boundary
+Content-Disposition: form-data; name="title"
+
+{{concertTitle}}
+--boundary
+Content-Disposition: form-data; name="singer"
+
+{{singer}}
+--boundary
+Content-Disposition: form-data; name="startAt"
+
+{{startAt}}
+--boundary
+Content-Disposition: form-data; name="endAt"
+
+{{endAt}}
+--boundary
+Content-Disposition: form-data; name="runningStartTime"
+
+{{runningStartTime}}
+--boundary
+Content-Disposition: form-data; name="runningEndTime"
+
+{{runningEndTime}}
+--boundary
+Content-Disposition: form-data; name="price"
+
+{{price}}
+--boundary
+Content-Disposition: form-data; name="images"; filename="concert.jpg"
+Content-Type: image/jpeg
+
+< ../image/bigbangimage.jpeg
+--boundary--

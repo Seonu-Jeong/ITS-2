@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.sparta.its.domain.reservation.dto.ReservationResponse;
+import org.sparta.its.domain.reservation.repository.ReservationNativeRepository;
 import org.sparta.its.domain.reservation.repository.ReservationRepository;
 import org.sparta.its.global.exception.ReservationException;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ public class ReservationFacadeService {
 
 	private final ReservationService reservationService;
 	private final ReservationRepository reservationRepository;
+	private final ReservationNativeRepository reservationNativeRepository;
 	private final RedissonClient redissonClient;
 
 	@Value("${WAIT_TIME}")
@@ -54,7 +56,7 @@ public class ReservationFacadeService {
 		ReservationResponse.SelectDto selectDto = null;
 
 		try {
-			isGetLock = reservationRepository.getLock(key) == 1;
+			isGetLock = reservationNativeRepository.getLock(key) == 1;
 
 			if (isGetLock) {
 				selectDto = reservationService.selectSeat(concertId, seatId, date, userId);
@@ -63,7 +65,7 @@ public class ReservationFacadeService {
 			}
 		} finally {
 			if (isGetLock) {
-				reservationRepository.releaseLock(key);
+				reservationNativeRepository.releaseLock(key);
 			}
 		}
 

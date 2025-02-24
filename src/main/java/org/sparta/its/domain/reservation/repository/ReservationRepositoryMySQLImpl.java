@@ -26,8 +26,8 @@ public class ReservationRepositoryMySQLImpl implements ReservationNativeReposito
 		query.setParameter(2, WAIT_TIME);
 
 		// 결과는 1 (성공) 또는 0 (실패)
-		Integer result = (Integer)query.getSingleResult();
-		return result;
+		Long result = (Long)query.getSingleResult();
+		return result.intValue();
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ReservationRepositoryMySQLImpl implements ReservationNativeReposito
 		Query query = entityManager.createNativeQuery(sql);
 		query.setParameter(1, key);
 
-		Integer result = (Integer)query.getSingleResult();
-		return result;
+		Long result = (Long)query.getSingleResult();
+		return result.intValue();
 	}
 }

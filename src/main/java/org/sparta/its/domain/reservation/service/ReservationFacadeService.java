@@ -13,6 +13,9 @@ import org.sparta.its.domain.reservation.repository.ReservationRepository;
 import org.sparta.its.global.exception.ReservationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +51,7 @@ public class ReservationFacadeService {
 	 * @param userId 유저 고유 식별자
 	 * @return {@link ReservationResponse.SelectDto}
 	 */
+	@Transactional
 	public ReservationResponse.SelectDto lockSelectSeat(Long concertId, Long seatId, LocalDate date, Long userId) {
 		String key = keyGenerator(concertId, seatId, date);
 
@@ -55,19 +59,22 @@ public class ReservationFacadeService {
 
 		ReservationResponse.SelectDto selectDto = null;
 
-		try {
-			isGetLock = reservationNativeRepository.getLock(key) == 1;
+		isGetLock = reservationNativeRepository.getLock(key) == 1;
 
-			if (isGetLock) {
-				selectDto = reservationService.selectSeat(concertId, seatId, date, userId);
-			} else {
-				throw new ReservationException(TIME_OUT);
-			}
-		} finally {
-			if (isGetLock) {
+		if (isGetLock) {
+			selectDto = reservationService.selectSeat(concertId, seatId, date, userId);
+		} else {
+			throw new ReservationException(TIME_OUT);
+		}
+
+		// 트랜잭션 완료 후 (커밋 또는 롤백) 락 해제
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+			@Override
+			public void afterCompletion(int status) {
+				// 트랜잭션이 커밋되거나 롤백되면 락 해제
 				reservationNativeRepository.releaseLock(key);
 			}
-		}
+		});
 
 		return selectDto;
 	}
@@ -81,6 +88,7 @@ public class ReservationFacadeService {
 	 * @param userId 유저 고유 식별자
 	 * @return {@link ReservationResponse.SelectDto}
 	 */
+	@Transactional
 	public ReservationResponse.SelectDto redisSelectSeat(Long concertId, Long seatId, LocalDate date, Long userId) {
 		RLock lock = redissonClient.getLock(keyGenerator(concertId, seatId, date));
 
@@ -97,11 +105,16 @@ public class ReservationFacadeService {
 		} catch (InterruptedException e) {
 			// controller advice 예외 처리 위임
 			throw new RuntimeException(e);
-		} finally {
-			if (lock.isHeldByCurrentThread()) {
+		}
+
+		// 트랜잭션 완료 후 (커밋 또는 롤백) 락 해제
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+			@Override
+			public void afterCompletion(int status) {
+				// 트랜잭션이 커밋되거나 롤백되면 락 해제
 				lock.unlock();
 			}
-		}
+		});
 
 		return resultDto;
 

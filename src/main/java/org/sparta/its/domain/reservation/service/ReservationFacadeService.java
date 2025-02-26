@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.sparta.its.domain.reservation.dto.ReservationResponse;
+import org.sparta.its.domain.reservation.repository.RedisLockRepository;
 import org.sparta.its.domain.reservation.repository.ReservationNativeRepository;
 import org.sparta.its.domain.reservation.repository.ReservationRepository;
 import org.sparta.its.global.exception.ReservationException;
@@ -35,6 +36,7 @@ public class ReservationFacadeService {
 	private final ReservationRepository reservationRepository;
 	private final ReservationNativeRepository reservationNativeRepository;
 	private final RedissonClient redissonClient;
+	private final RedisLockRepository redisLockRepository;
 
 	@Value("${WAIT_TIME}")
 	long waitTime;
@@ -113,6 +115,39 @@ public class ReservationFacadeService {
 			public void afterCompletion(int status) {
 				// 트랜잭션이 커밋되거나 롤백되면 락 해제
 				lock.unlock();
+			}
+		});
+
+		return resultDto;
+
+	}
+
+	/**
+	 * 레디스 기반 좌석 선택(Lettuce)
+	 *
+	 * @param concertId 콘서트 고유 식별자
+	 * @param seatId 좌석 고유 식별자
+	 * @param date 공연 날짜
+	 * @param userId 유저 고유 식별자
+	 * @return {@link ReservationResponse.SelectDto}
+	 */
+	@Transactional
+	public ReservationResponse.SelectDto redisLettuceSelectSeat(Long concertId, Long seatId, LocalDate date,
+		Long userId) {
+
+		ReservationResponse.SelectDto resultDto = null;
+
+		if (!redisLockRepository.lock(keyGenerator(concertId, seatId, date)))
+			throw new ReservationException(ALREADY_BOOKED);
+
+		resultDto = reservationService.selectSeat(concertId, seatId, date, userId);
+
+		// 트랜잭션 완료 후 (커밋 또는 롤백) 락 해제
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+			@Override
+			public void afterCompletion(int status) {
+				// 트랜잭션이 커밋되거나 롤백되면 락 해제
+				redisLockRepository.unlock(keyGenerator(concertId, seatId, date));
 			}
 		});
 

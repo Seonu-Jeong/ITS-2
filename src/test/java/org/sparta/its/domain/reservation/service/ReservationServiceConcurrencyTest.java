@@ -123,4 +123,45 @@ public class ReservationServiceConcurrencyTest {
 			() -> assertThat(failCount.get()).isEqualTo(9)
 		);
 	}
+
+	@Test
+	@DisplayName("좌석 임시 선택 동시성 테스트 - redis(Lettuce) 기반")
+	public void redisLettuceSelectSeatTest() throws InterruptedException {
+		//given
+		List<User> users = userRepository.findAll();
+		Long concertId = 1L;
+		Long seatId = 1L;
+		LocalDate date = LocalDate.of(2025, 5, 05);
+
+		int numThreads = 10;
+		CountDownLatch doneSignal = new CountDownLatch(numThreads);
+		ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+
+		AtomicInteger successCount = new AtomicInteger();
+		AtomicInteger failCount = new AtomicInteger();
+
+		// when
+		for (int i = 0; i < numThreads; i++) {
+			int userIdx = i;
+			executorService.execute(() -> {
+				try {
+					reservationService.redisLettuceSelectSeat(concertId, seatId, date, users.get(userIdx).getId());
+
+					successCount.getAndIncrement();
+				} catch (ReservationException e) {
+					failCount.getAndIncrement();
+				} finally {
+					doneSignal.countDown();
+				}
+			});
+		}
+		doneSignal.await();
+		executorService.shutdown();
+
+		//then
+		assertAll(
+			() -> assertThat(successCount.get()).isEqualTo(1),
+			() -> assertThat(failCount.get()).isEqualTo(9)
+		);
+	}
 }

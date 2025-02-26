@@ -38,6 +38,9 @@ dependencies {
     // spring security test
     testImplementation 'org.springframework.security:spring-security-test'
 
+    // spring data redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // Redisson
     implementation 'org.redisson:redisson-spring-boot-starter:3.41.0'
 
